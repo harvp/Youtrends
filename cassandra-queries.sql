@@ -1,5 +1,6 @@
 CREATE KEYSPACE yvideos WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': '3'}  AND durable_writes = true;
 
+
 CREATE TABLE yvideos.contentdetails (
     id int PRIMARY KEY,
     caption text,
