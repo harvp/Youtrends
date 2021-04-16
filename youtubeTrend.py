@@ -4,8 +4,8 @@
 from pprint import pprint
 import json
 import os
-import cassandra
 import datetime
+import cassandra
 from cassandra.cluster import Cluster
 
 # Connection to yvideos keyspace
