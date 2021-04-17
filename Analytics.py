@@ -10,7 +10,10 @@ import cassandra
 from cassandra.cluster import Cluster
 
 
-def engagement(session, idnum):
+def videoengagement(idnum):
+
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
     idval = str(idnum)
     query = 'SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics WHERE id = ' + idval
     rows = session.execute(query)
@@ -23,10 +26,30 @@ def engagement(session, idnum):
     return score
 
 
+def channelengagement(cname):
+
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
+    query1 = 'SELECT id, channeltitle FROM snippets'
+    rows = session.execute(query1)
+    vidnumbers = []
+    for result in rows:
+        if result.channeltitle == cname:
+            vidnumbers.append(result.id)
+    score = 0
+    for idnum in vidnumbers:
+        idval = str(idnum)
+        score += videoengagement(idval)
+    return score
+
+
 # pass the session connection to the server,
 # an empty list, and an int X for the number of records
 # to be in the list. returns the top X records
-def toplist(session, arr, number):
+def topvideos(number):
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
+    arr = []
     lowest: int = 0
     count: int = 0
     rows = session.execute('SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics')
@@ -47,12 +70,41 @@ def toplist(session, arr, number):
             lowest = score
             arr.append([user_row.id, score])
             arr.sort(key=operator.itemgetter(1))
+    return arr
 
 
-cluster = Cluster()
-cqlSession = cluster.connect('yvideos')
-myarr = []
-toplist(cqlSession, myarr, 10)
+# pass the session connection to the server,
+# an empty list, and an int X for the number of records
+# to be in the list. returns the top X records
+def topchannels(number):
+
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
+    arr = []
+    lowest: int = 0
+    count: int = 0
+    rows = session.execute('SELECT channeltitle FROM snippets')
+    for user_row in rows:
+        score = channelengagement(user_row.channeltitle)
+        if count < number:
+            arr.append([user_row.channeltitle, score])
+            count += 1
+            if lowest < score:
+                lowest = score
+            arr.sort(key=operator.itemgetter(1))
+        elif lowest < score:
+            del arr[0]
+            lowest = score
+            arr.append([user_row.channeltitle, score])
+            arr.sort(key=operator.itemgetter(1))
+    return arr
+
+
+myarr = topvideos(10)
 print(myarr)
-value = engagement(cqlSession, 42)
+value = videoengagement(42)
+holder = channelengagement("Sapnap")
 print(value)
+newarr = topchannels(10)
+print(newarr)
+print(holder)
