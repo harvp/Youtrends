@@ -9,7 +9,8 @@ import operator
 import cassandra
 from cassandra.cluster import Cluster
 
-
+# pass an int for the id of the video that will be scored
+# returns an int with that score
 def videoengagement(idnum):
 
     cluster = Cluster()
@@ -25,7 +26,9 @@ def videoengagement(idnum):
         score = (int(comments) * 10) + int(views) + (int(likes) * 2) + int(dislikes)
     return score
 
-
+# pass a string with the name of the channel
+# that will be scored. returns an int with that
+# channel's score
 def channelengagement(cname):
 
     cluster = Cluster()
@@ -43,9 +46,8 @@ def channelengagement(cname):
     return score
 
 
-# pass the session connection to the server,
-# an empty list, and an int X for the number of records
-# to be in the list. returns the top X records
+# pass the number of videos to be in the list as an
+# int. returns the top X records
 def topvideos(number):
     cluster = Cluster()
     session = cluster.connect('yvideos')
@@ -73,9 +75,8 @@ def topvideos(number):
     return arr
 
 
-# pass the session connection to the server,
-# an empty list, and an int X for the number of records
-# to be in the list. returns the top X records
+# pass the number of channels to be in the list.
+# as an int. returns the top X records
 def topchannels(number):
 
     cluster = Cluster()
@@ -100,11 +101,11 @@ def topchannels(number):
     return arr
 
 
-myarr = topvideos(10)
-print(myarr)
-value = videoengagement(42)
-holder = channelengagement("Sapnap")
-print(value)
-newarr = topchannels(10)
-print(newarr)
-print(holder)
+# myarr = topvideos(10)
+# print(myarr)
+# value = videoengagement(42)
+# holder = channelengagement("Sapnap")
+# print(value)
+# newarr = topchannels(10)
+# print(newarr)
+# print(holder)
