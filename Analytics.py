@@ -9,6 +9,7 @@ import operator
 import cassandra
 from cassandra.cluster import Cluster
 
+
 # pass an int for the id of the video that will be scored
 # returns an int with that score
 def videoengagement(idnum):
@@ -25,6 +26,7 @@ def videoengagement(idnum):
         dislikes = user_row.dislikecount
         score = (int(comments) * 10) + int(views) + (int(likes) * 2) + int(dislikes)
     return score
+
 
 # pass a string with the name of the channel
 # that will be scored. returns an int with that
@@ -75,6 +77,40 @@ def topvideos(number):
     return arr
 
 
+# pass the number of videos to be in the list as an
+# int. returns the top X records
+def topvideonames(number):
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
+    arr = []
+    lowest: int = 0
+    count: int = 0
+    rows = session.execute('SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics')
+    nameresults = session.execute('SELECT id, title FROM localized')
+    for user_row in rows:
+        comments = user_row.commentcount
+        views = user_row.viewcount
+        likes = user_row.likecount
+        dislikes = user_row.dislikecount
+        score = (int(comments) * 10) + int(views) + (int(likes) * 2) + int(dislikes)
+        if count < number:
+            arr.append([user_row.id, score])
+            count += 1
+            if lowest < score:
+                lowest = score
+            arr.sort(key=operator.itemgetter(1))
+        elif lowest < score:
+            del arr[0]
+            lowest = score
+            arr.append([user_row.id, score])
+            arr.sort(key=operator.itemgetter(1))
+    for records in nameresults:
+        for item in arr:
+            if item[0] == records.id:
+                item[0] = records.title
+    return arr
+
+
 # pass the number of channels to be in the list.
 # as an int. returns the top X records
 def topchannels(number):
@@ -109,3 +145,42 @@ def topchannels(number):
 # newarr = topchannels(10)
 # print(newarr)
 # print(holder)
+vidsearched = False
+channelsearched = False
+topvidresults = []
+topchannelresults = []
+while True:
+    print("Choose an option:")
+    print("1) Display the top ten videos")
+    print("2) Display the top ten channels")
+    print("3) Display the engagement score of a video")
+    print("4) Display the engagement score of a channel")
+    print("5) Quit")
+    input1 = input()
+    if input1 == "1":
+        if vidsearched == False:
+            topvidresults = topvideonames(10)
+            vidsearched = True
+        print(*topvidresults, sep="\n")
+        input2 = input()
+    elif input1 == "2":
+        if channelsearched == False:
+            topchannelresults = topchannels(10)
+            channelsearched = True
+        print(*topchannelresults, sep="\n")
+        input2 = input()
+    elif input1 == "3":
+        print("Enter the id of a video:")
+        input2 = input()
+        input3 = int(input2)
+        result = videoengagement(input3)
+        print(result)
+        input2 = input()
+    elif input1 == "4":
+        print("Enter the name of the channel")
+        input2 = input()
+        result = channelengagement(input2)
+        print(result)
+        input2 = input()
+    elif input1 == "5":
+        exit()
