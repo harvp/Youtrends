@@ -11,7 +11,7 @@ from cassandra.cluster import Cluster
 # Connection to yvideos keyspace
 
 cluster = Cluster()
-session = cluster.connect('yvideos')
+session = cluster.connect('youvideos')
 
 session.execute("""truncate table records;""")
 session.execute("""truncate table snippets;""")
@@ -45,7 +45,13 @@ with open('videoinfo.json') as data_file:
         s_channelTitle = "'" + v['snippet']['channelTitle'] + "'"
         s_categoryId = "'" + v['snippet']['categoryId'] + "'"
         s_liveBroadcastContent = "'" + v['snippet']['liveBroadcastContent'] + "'"
-        s_defaultlanguage = "'" + v['snippet']['defaultLanguage'] + "'"
+        s_defaultlanguage = "'" + v['snippet']['defaultLanguage'] + "', "
+        scrubdescription = v['snippet']['description']
+        scrubdescription = scrubdescription.replace("'", "''")
+        scrubdescription = scrubdescription.replace("\n","  ")
+        scrubdescription = scrubdescription.replace("\r", "  ")
+        scrubdescription = scrubdescription.replace("\r\n", "  ")
+        s_description = "'" + scrubdescription + "'"
 
         
         cont_id = contentDetails_id
@@ -80,7 +86,7 @@ with open('videoinfo.json') as data_file:
         session.execute(prepared_stmt)
 
         query = \
-            'insert into snippets (id,publishedAt,channelId,title,channelTitle,categoryid,liveBroadcastContent,defeaultlanguage) values ('
+            'insert into snippets (id,publishedAt,channelId,title,channelTitle,categoryid,liveBroadcastContent,defeaultlanguage,description) values ('
         query += str(s_id) + ', '
         query += s_publishedAt + ', '
         query += s_channelId + ', '
@@ -88,7 +94,8 @@ with open('videoinfo.json') as data_file:
         query += s_channelTitle + ', '
         query += s_categoryId + ', '
         query += s_liveBroadcastContent + ', '
-        query += s_defaultlanguage + ')'
+        query += s_defaultlanguage 
+        query += s_description + ')'
         #query += str(s_channelTitle_id) + ', '
         #query += str(s_localized_id) + ')'
 

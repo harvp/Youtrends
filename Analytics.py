@@ -137,6 +137,20 @@ def topchannels(number):
     return arr
 
 
+def searchforvideobylist(listofterms):
+    cluster = Cluster()
+    session = cluster.connect('yvideos')
+    results = []
+    nameresults = session.execute('SELECT id, title FROM localized')
+    for value in nameresults:
+        flag = True
+        for term in listofterms:
+            if value.title.find(term) < 0:
+                flag = False
+        if flag == True:
+            results.append([value.title, value.id])
+    return results
+
 # myarr = topvideos(10)
 # print(myarr)
 # value = videoengagement(42)
@@ -155,19 +169,22 @@ while True:
     print("2) Display the top ten channels")
     print("3) Display the engagement score of a video")
     print("4) Display the engagement score of a channel")
-    print("5) Quit")
+    print("5) Search video titles for a term")
+    print("6) Quit")
     input1 = input()
     if input1 == "1":
         if vidsearched == False:
             topvidresults = topvideonames(10)
             vidsearched = True
         print(*topvidresults, sep="\n")
+        print("Press enter to continue")
         input2 = input()
     elif input1 == "2":
         if channelsearched == False:
             topchannelresults = topchannels(10)
             channelsearched = True
         print(*topchannelresults, sep="\n")
+        print("Press enter to continue")
         input2 = input()
     elif input1 == "3":
         print("Enter the id of a video:")
@@ -175,12 +192,29 @@ while True:
         input3 = int(input2)
         result = videoengagement(input3)
         print(result)
+        print("Press enter to continue")
         input2 = input()
     elif input1 == "4":
         print("Enter the name of the channel")
         input2 = input()
         result = channelengagement(input2)
         print(result)
+        print("Press enter to continue")
         input2 = input()
     elif input1 == "5":
+        print("Enter the search terms")
+        input2 = input()
+        inputlist = []
+        stringbuilder = ""
+        for char in input2:
+            if char != " " and char != "\n":
+                stringbuilder += char
+            else:
+                inputlist.append(stringbuilder)
+                stringbuilder = ""
+        inputlist.append(stringbuilder)
+        result = searchforvideobylist(inputlist)
+        print(*result, sep="\n")
+        input2 = input("Press enter to continue")
+    elif input1 == "6":
         exit()

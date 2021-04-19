@@ -2,10 +2,10 @@
 --read_repair_chance clauses because they were causing problems with my database setup. if you need
 --them, please see cassandra-queries-old-version.sql
 
-CREATE KEYSPACE yvideos WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': '3'}  AND durable_writes = true;
+CREATE KEYSPACE youvideos WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': '3'}  AND durable_writes = true;
 
 
-CREATE TABLE yvideos.contentdetails (
+CREATE TABLE youvideos.contentdetails (
     id int PRIMARY KEY,
     caption text,
     definition text,
@@ -23,7 +23,7 @@ CREATE TABLE yvideos.contentdetails (
     AND min_index_interval = 128
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE yvideos.statistics (
+CREATE TABLE youvideos.statistics (
     id int PRIMARY KEY,
     commentcount text,
     dislikecount text,
@@ -42,7 +42,7 @@ CREATE TABLE yvideos.statistics (
     AND min_index_interval = 128
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE yvideos.snippets (
+CREATE TABLE youvideos.snippets (
     id int PRIMARY KEY,
     categoryid text,
     channelid text,
@@ -50,7 +50,8 @@ CREATE TABLE yvideos.snippets (
     defeaultlanguage text,
     livebroadcastcontent text,
     publishedat text,
-    title text
+    title text,
+    description text
 ) WITH bloom_filter_fp_chance = 0.01
     AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
     AND comment = ''
@@ -64,7 +65,7 @@ CREATE TABLE yvideos.snippets (
     AND min_index_interval = 128
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE yvideos.localized (
+CREATE TABLE youvideos.localized (
     id int PRIMARY KEY,
     title text
 ) WITH bloom_filter_fp_chance = 0.01
@@ -80,7 +81,7 @@ CREATE TABLE yvideos.localized (
     AND min_index_interval = 128
     AND speculative_retry = '99PERCENTILE';
 
-CREATE TABLE yvideos.records (
+CREATE TABLE youvideos.records (
     id int PRIMARY KEY,
     etag text,
     videoid text
