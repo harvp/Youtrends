@@ -8,14 +8,13 @@ import datetime
 import operator
 import cassandra
 from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
 
 
 # pass an int for the id of the video that will be scored
 # returns an int with that score
-def videoengagement(idnum):
+def videoengagement(idnum, session):
 
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
     idval = str(idnum)
     query = 'SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics WHERE id = ' + idval
     rows = session.execute(query)
@@ -31,10 +30,8 @@ def videoengagement(idnum):
 # pass a string with the name of the channel
 # that will be scored. returns an int with that
 # channel's score
-def channelengagement(cname):
+def channelengagement(cname, session):
 
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
     query1 = 'SELECT id, channeltitle FROM snippets'
     rows = session.execute(query1)
     vidnumbers = []
@@ -44,19 +41,19 @@ def channelengagement(cname):
     score = 0
     for idnum in vidnumbers:
         idval = str(idnum)
-        score += videoengagement(idval)
+        score += videoengagement(idval, session)
     return score
 
 
 # pass the number of videos to be in the list as an
 # int. returns the top X records
-def topvideos(number):
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
+def topvideos(number, session):
+
     arr = []
     lowest: int = 0
     count: int = 0
     rows = session.execute('SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics')
+    print("Got data")
     for user_row in rows:
         comments = user_row.commentcount
         views = user_row.viewcount
@@ -79,9 +76,8 @@ def topvideos(number):
 
 # pass the number of videos to be in the list as an
 # int. returns the top X records
-def topvideonames(number):
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
+def topvideonames(number, session):
+
     arr = []
     lowest: int = 0
     count: int = 0
@@ -113,16 +109,15 @@ def topvideonames(number):
 
 # pass the number of channels to be in the list.
 # as an int. returns the top X records
-def topchannels(number):
+def topchannels(number, session):
 
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
     arr = []
     lowest: int = 0
     count: int = 0
     rows = session.execute('SELECT channeltitle FROM snippets')
+    # rows2 = session.execute('SELECT id, commentcount, dislikecount, likecount, viewcount FROM statistics')
     for user_row in rows:
-        score = channelengagement(user_row.channeltitle)
+        score = channelengagement(user_row.channeltitle, session)
         if count < number:
             arr.append([user_row.channeltitle, score])
             count += 1
@@ -137,9 +132,8 @@ def topchannels(number):
     return arr
 
 
-def searchforvideobylist(listofterms):
-    cluster = Cluster()
-    session = cluster.connect('yvideos')
+def searchforvideobylist(listofterms, session):
+
     results = []
     nameresults = session.execute('SELECT id, title FROM localized')
     for value in nameresults:
@@ -151,18 +145,17 @@ def searchforvideobylist(listofterms):
             results.append([value.title, value.id])
     return results
 
-# myarr = topvideos(10)
-# print(myarr)
-# value = videoengagement(42)
-# holder = channelengagement("Sapnap")
-# print(value)
-# newarr = topchannels(10)
-# print(newarr)
-# print(holder)
 vidsearched = False
 channelsearched = False
 topvidresults = []
 topchannelresults = []
+cloud_config = {
+    'secure_connect_bundle': 'secure-connect-teaminferno.zip'
+}
+auth_provider = PlainTextAuthProvider('PKulaMpxCDcyZsxHoLeorxdE',
+                                      'R1KL7l1u,awPgafa0-G3Xjt5QAjk,gTtz.qgmQSrsstUIdQnOoq_jgI,77nPA9upDOOYj2+ZefBMXudz+dFfF7IYPMGo56gz7xD337Nrcaufv3KKh,kzaS,0_xuCflNI')
+cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+cqlsession = cluster.connect('yvideos')
 while True:
     print("Choose an option:")
     print("1) Display the top ten videos")
@@ -174,14 +167,14 @@ while True:
     input1 = input()
     if input1 == "1":
         if vidsearched == False:
-            topvidresults = topvideonames(10)
+            topvidresults = topvideonames(10, cqlsession)
             vidsearched = True
         print(*topvidresults, sep="\n")
         print("Press enter to continue")
         input2 = input()
     elif input1 == "2":
         if channelsearched == False:
-            topchannelresults = topchannels(10)
+            topchannelresults = topchannels(10, cqlsession)
             channelsearched = True
         print(*topchannelresults, sep="\n")
         print("Press enter to continue")
@@ -190,14 +183,14 @@ while True:
         print("Enter the id of a video:")
         input2 = input()
         input3 = int(input2)
-        result = videoengagement(input3)
+        result = videoengagement(input3, cqlsession)
         print(result)
         print("Press enter to continue")
         input2 = input()
     elif input1 == "4":
         print("Enter the name of the channel")
         input2 = input()
-        result = channelengagement(input2)
+        result = channelengagement(input2, cqlsession)
         print(result)
         print("Press enter to continue")
         input2 = input()
@@ -213,7 +206,7 @@ while True:
                 inputlist.append(stringbuilder)
                 stringbuilder = ""
         inputlist.append(stringbuilder)
-        result = searchforvideobylist(inputlist)
+        result = searchforvideobylist(inputlist, cqlsession)
         print(*result, sep="\n")
         input2 = input("Press enter to continue")
     elif input1 == "6":

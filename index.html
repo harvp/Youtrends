@@ -110,6 +110,13 @@ White: #FFFFFF
 			</h2>
 			<p>
 				You might be thinking, 'how does the website know which is best?' Well, we use a value called engagement score! For each video, we consider the number of views, comments, and likes/dislikes to equate that video's score. For every channel, we analyze the videos from that channel that have made it to the top 1,000 (if any) and combine those videos's scores together to generate the channel's score.
+				
+				<?php
+				$command = escapeshellcmd('python3 Analytics.py');
+				$output = shell_exec($command);
+				echo $output;
+				?>
+				
 			</p>
 		</section>
 		<hr>
@@ -140,6 +147,8 @@ White: #FFFFFF
 				{
 				
 				}
+				
+				
 				
 				function toPHP(dest, output)
 				{
