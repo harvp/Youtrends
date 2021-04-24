@@ -20,8 +20,14 @@ auth_provider = PlainTextAuthProvider('PKulaMpxCDcyZsxHoLeorxdE',
 cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
 cqlsession = cluster.connect('yvideos')
 
+
+def reverse(lst):
+    return [ele for ele in reversed(lst)]
+
+
 def topvideonames(number, session):
 
+    buffernumber = number * 3
     arr = []
     lowest: int = 0
     count: int = 0
@@ -33,8 +39,8 @@ def topvideonames(number, session):
         likes = user_row.likecount
         dislikes = user_row.dislikecount
         score = (int(comments) * 10) + int(views) + (int(likes) * 2) + int(dislikes)
-        if count < number:
-            arr.append([user_row.id, score])
+        if count < buffernumber:
+            arr.append([user_row.id, str(score), '</br>'])
             count += 1
             if lowest < score:
                 lowest = score
@@ -42,14 +48,38 @@ def topvideonames(number, session):
         elif lowest < score:
             del arr[0]
             lowest = score
-            arr.append([user_row.id, score])
+            arr.append([user_row.id, str(score), '</br>'])
             arr.sort(key=operator.itemgetter(1))
     for records in nameresults:
         for item in arr:
             if item[0] == records.id:
-                item[0] = records.title
+                item[0] = records.title + "  "
+    for firstitem in arr:
+        for seconditem in arr:
+            if firstitem[0] == seconditem[0]:
+                if firstitem[1] > seconditem[1]:
+                    del seconditem
+                else:
+                    firstitem = ["deleteme", 0]
+    for obj in arr:
+        if obj[1] == 0:
+            del obj
+    arr.sort(key=operator.itemgetter(1))
+    while len(arr) > number:
+        del arr[0]
+        arr.sort(key=operator.itemgetter(1))
+
     return arr
 
 
 result = topvideonames(10, cqlsession)
-exit(result)
+fixedresults = reverse(result)
+
+resultstring = ""
+for ele in fixedresults:
+    for element in ele:
+        resultstring += element
+
+print(resultstring)
+
+# exit(result)

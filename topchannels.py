@@ -21,6 +21,10 @@ cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
 cqlsession = cluster.connect('yvideos')
 
 
+def reverse(lst):
+    return[ele for ele in reversed(lst)]
+
+
 def topchannels(number, session):
 
     arr = []
@@ -40,7 +44,7 @@ def topchannels(number, session):
         videoscores.append([user_row.id, score])
     for user_row in rows:
         if user_row.channeltitle not in (channeldirectory):
-            channeldirectory.append([user_row.channeltitle, user_row.id])
+            channeldirectory.append([user_row.channeltitle + " ", user_row.id])
 
     for channelentry in channeldirectory:
         chanscore = 0
@@ -49,7 +53,7 @@ def topchannels(number, session):
                 chanscore += videoscore[1]
 
         if count < number:
-            arr.append([channelentry[0], chanscore])
+            arr.append([channelentry[0], str(chanscore), '</br>'])
             count += 1
             if lowest < score:
                 lowest = score
@@ -57,10 +61,16 @@ def topchannels(number, session):
         elif lowest < chanscore:
             del arr[0]
             lowest = chanscore
-            arr.append([channelentry[0], chanscore])
+            arr.append([channelentry[0], str(chanscore), '</br>'])
             arr.sort(key=operator.itemgetter(1))
     return arr
 
 
 topchannelresults = topchannels(10, cqlsession)
-exit(topchannelresults)
+fixedresults = reverse(topchannelresults)
+result = ""
+for ele in fixedresults:
+    for element in ele:
+        result += element
+
+print(result)
