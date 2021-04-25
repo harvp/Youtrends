@@ -12,7 +12,7 @@
 	$outputStr = "<div class = \"flexContainer\">";
 	for($i = 0; $i < 10; $i++)
 	{
-		$outputStr .= "<div>" . $output[$i] . "</div>";
+		$outputStr .= "<div>" . $output[$i][0] . "</div>";
 	}
 	$outputStr .= "</div>";
 
