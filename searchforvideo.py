@@ -36,7 +36,7 @@ def searchforvideobylist(listofterms, session):
         if flag == True:
             results[counter] = [value.title, value.id]
             counter += 1
-    results[-1] = counter
+    results[6] = counter
     return results
 
 

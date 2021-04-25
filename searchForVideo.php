@@ -12,7 +12,7 @@
 	$command = escapeshellarg('python searchforvideo.py $query');
 	$output = json_decode(exec($command), true);
 	$outputStr = "<div><table style = \"width: 100%\">";
-	$max = $output[-1];
+	$max = $output[6];
 	if($max == 0)
 		$outputStr .= "<tr><td>No Video Found</td></tr>";
 	else
