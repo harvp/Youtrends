@@ -11,18 +11,15 @@
 	// */
 	$command = escapeshellarg('python searchforvideo.py $query');
 	$output = json_decode(exec($command), true);
-	$title;
-	$number;
-	for($i = 0; $i < 5; $i++)
-	{
-		$title[$i] = substr($output[$i], 0, strripos($output[$i], " "));
-		$number[$i] = substr($output[$i], strripos($output[$i], " "));
-	}
 	$outputStr = "<div><table style = \"width: 100%\">";
-	for($i = 0; $i < 5; $i++)
-	{
-		$outputStr .= "<tr><td>" . $title[$i] . "</td><td>" . $number[$i] . "</td></tr>";
-	}
+	$max = $output[-1]
+	if($max == 0)
+		$outputStr .= "<tr><td>No Video Found</td></tr>"
+	else
+		for($i = 0; $i < $max; $i++)
+		{
+			$outputStr .= "<tr><td>" . $output[$i][0] . "</td><td>" . $number[$i][1] . "</td></tr>";
+		}
 	$outputStr .= "</table></div>";
 	
 	echo $outputStr;
