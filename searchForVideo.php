@@ -19,7 +19,7 @@
 	else
 		for($i = 0; $i < $max; $i++)
 		{
-			$outputStr .= "<tr><td>" . $output[$i][0] . "</td><td>" . $number[$i][1] . "</td></tr>";
+			$outputStr .= "<tr><td>" . $output[$i][0] . "</td><td>" . $output[$i][1] . "</td></tr>";
 		}
 	$outputStr .= "</table></div>";
 	
