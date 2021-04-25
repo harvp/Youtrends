@@ -68,9 +68,13 @@ def topchannels(number, session):
 
 topchannelresults = topchannels(10, cqlsession)
 fixedresults = reverse(topchannelresults)
-result = ""
+
+result = {}
+counter = 0
 for ele in fixedresults:
     for element in ele:
-        result += element
+        result[counter] = element
+        counter += 1
 
-print(result)
+print(json.dumps(result))
+

@@ -5,6 +5,7 @@ Almost Black: #282828
 Dark Gray: #303030
 Red: #FF0000
 White: #FFFFFF
+Very Light Gray: #E0E0E0
 -->
 <html lang = "en-us">
 	<head>
@@ -18,7 +19,7 @@ White: #FFFFFF
 		<style>
 			html
 			{
-				margin: 0px, 50px;
+				margin: 0px, 10%;
 				padding: 0;
 				background: #FF0000;
 				font-family: Verdana, sans serif;
@@ -42,7 +43,7 @@ White: #FFFFFF
 			{
 				text-align: center;
 				font-size: 30px;
-				margin: 5px 50px 0px;
+				margin: 5px 10% 0px;
 			}
 			
 			h2
@@ -55,7 +56,7 @@ White: #FFFFFF
 			p
 			{
 				background: #FFFFFF;
-				margin: 5px 150px;
+				margin: 5px 15%;
 				text-align: center;
 			}
 			
@@ -67,6 +68,51 @@ White: #FFFFFF
 			form
 			{
 				text-align: center;
+			}
+			
+			.flexContainer
+			{
+				flex: 1 1 0;
+				justify-content: center;
+				display: flex;
+				flex-wrap: wrap;
+			}
+			
+			.flexContainer > div
+			{
+				background-color: #E0E0E0;
+				text-align: center;
+				margin: 2px;
+				font-size: 12px;
+				padding: 5px;
+			}
+			
+			.flexContainerVert
+			{
+				flex: 1 1 0;
+				justify-content: center;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.flexContainerVert > div
+			{
+				background-color: #E0E0E0;
+				text-align: center;
+				margin: 2px;
+				font-size: 12px;
+				padding: 5px;
+			}
+			
+			table
+			{
+				border-spacing: 0px 2px;
+			}
+			
+			td
+			{
+				background-color:#E0E0E0;
+				padding: 5px 0px;
 			}
 		</style>
 	
@@ -82,7 +128,7 @@ White: #FFFFFF
 				Hello! <br>
 				Welcome to YouTrends, an analytics tool for YouTube! We are <b>not</b> affiliated with Youtube in any way. <br>
 				This is designed for content creators on the YouTube platform (and for those who are interested in the numbers). <br>
-				This program gathers information about the top 1,000 videos on a regular basis and does analysis on the data. <br>
+				The program gathers information about the top 1,000 videos on a regular basis and does analysis on the data. <br>
 			</p>
 		</section>
 		<hr>
@@ -109,14 +155,13 @@ White: #FFFFFF
 				How do we determine top videos and channels?:
 			</h2>
 			<p>
-				You might be thinking, 'how does the website know which is best?' Well, we use a value called engagement score! For each video, we consider the number of views, comments, and likes/dislikes to equate that video's score. For every channel, we analyze the videos from that channel that have made it to the top 1,000 (if any) and combine those videos's scores together to generate the channel's score.
-				
-				<?php
-				$command = escapeshellcmd('python3 Analytics.py');
-				$output = shell_exec($command);
-				echo $output;
-				?>
-				
+				You might be thinking, 'how does the website know which is best?'
+				Well, we use a value called engagement score! For each video, we
+				consider the number of views, comments, and likes/dislikes to
+				equate that video's score. For every channel, we analyze the
+				videos from that channel that have made it to the top 1,000 (if
+				any) and combine those videos's scores together to generate the 
+				channel's score.
 			</p>
 		</section>
 		<hr>
@@ -124,10 +169,18 @@ White: #FFFFFF
 			<h2>
 				Search a Video!:
 			</h2>
+			<p>
+				Search for a video by title to see if it has made it into the 
+				top 1,000! You'll also see the video's engagement score so you
+				can compare it to other videos!
+			</p>
 			<form>
 				<input id = "searchVid" type = "text" style = "width: 300px;" placeholder = "Video Name" \>
 				<input id = "goButton" type = "button" value = "Enter" onclick = "findVideo()" \>
 			</form>
+			<p id = "searchVidResults" />
+		</section>
+		<section>
 		</section>
 		
 		<section> <!-- Javascript to access PHP and client-side formatting -->
@@ -140,28 +193,44 @@ White: #FFFFFF
 				
 				function getTopChannels()
 				{
-					
+					toPHP("topTenChans.php", "top10Chan", "")
 				}
 				
 				function getTopVideos()
 				{
-				
+					toPHP("topTenVids.php", "top10Vid", "")
 				}
 				
-				
-				
-				function toPHP(dest, output)
+				function toPHP(dest, output, parameter)
 				{
+					var temp = parameter;
+					temp.trim();
+					if(temp != "")
+					{
+						parameter.replace(/ /g,"_");
+						dest += "?q=" + parameter;
+					}
+				
 					var xmlhttp = new XMLHttpRequest();
 					xmlhttp.onreadystatechange = function()
 					{
 						if(this.readyState == 4 && this.status == 200)
 						{
-							document.getElementById(dest).innerHTML = this.responseText;
+							document.getElementById(output).innerHTML = this.responseText;
 						}
 					}
 					xmlhttp.open("GET", dest, true);
 					xmlhttp.send();
+				}
+				
+				function findVideo()
+				{
+					var goal = document.getElementById("searchVid").value
+					var temp = goal;
+					if(temp.trim()!= "")
+						toPHP("searchForVideo.php", "searchVidResults", goal); 
+					else
+						document.getElementById("searchVidResults").innerHTML = "<p>You must enter a name!</p>";
 				}
 			</script>
 		</section>

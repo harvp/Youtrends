@@ -75,11 +75,13 @@ def topvideonames(number, session):
 result = topvideonames(10, cqlsession)
 fixedresults = reverse(result)
 
-resultstring = ""
+resultDict = {}
+counter = 0
 for ele in fixedresults:
     for element in ele:
-        resultstring += element
+        resultDict[counter] = element
+        counter += 1
 
-print(resultstring)
+print(json.dumps(resultstring))
 
 # exit(result)
