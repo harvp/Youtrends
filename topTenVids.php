@@ -9,13 +9,10 @@
 	//*/
 	$command = escapeshellcmd('python topvideos.py');
 	$output = json_decode(exec($command), true);
-	for($i = 0; $i < 10; $i++)
-	{
-		$output[$i] = substr($output[$i], 0, strripos($output[$i], " "));
-	}
 	$outputStr = "<div class = \"flexContainerVert\">";
 	for($i = 0; $i < 10; $i++)
 	{
+		var_dump($temp);
 		$outputStr .= "<div>" . $output[$i] . "</div>";
 	}
 	$outputStr .= "</div>";
