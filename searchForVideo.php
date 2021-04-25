@@ -2,15 +2,15 @@
 <?php
 	$query = $_GET["q"];
 	
-	// /*TESTER DATA UNCOMMENT LINE TO REMOVE
+	/*TESTER DATA UNCOMMENT LINE TO REMOVE
 	for($i = 0; $i < 5; $i++)
 	{
 		$output[$i] = $i;
 		$output[$i] .= " " . ($i * $i);
 	}
 	// */
-	//$command = escapeshellarg('python searchforvideo.py $query');
-	//$output = json_decode(exec($command));
+	$command = escapeshellarg('python searchforvideo.py $query');
+	$output = json_decode(exec($command), true);
 	$title;
 	$number;
 	for($i = 0; $i < 5; $i++)
