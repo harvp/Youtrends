@@ -12,7 +12,6 @@
 	$outputStr = "<div class = \"flexContainerVert\">";
 	for($i = 0; $i < 10; $i++)
 	{
-		var_dump($temp);
 		$outputStr .= "<div>" . $output[$i] . "</div>";
 	}
 	$outputStr .= "</div>";
