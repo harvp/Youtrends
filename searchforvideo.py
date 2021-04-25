@@ -40,4 +40,4 @@ def searchforvideobylist(listofterms, session):
 searchterms = sys.argv
 searchterms.pop(0)
 result = searchforvideobylist(searchterms, cqlsession)
-exit(result)
+print(json.dumps(result))

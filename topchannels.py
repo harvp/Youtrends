@@ -53,7 +53,7 @@ def topchannels(number, session):
                 chanscore += videoscore[1]
 
         if count < number:
-            arr.append([channelentry[0], str(chanscore), '</br>'])
+            arr.append([channelentry[0], str(chanscore)])
             count += 1
             if lowest < score:
                 lowest = score
@@ -61,7 +61,7 @@ def topchannels(number, session):
         elif lowest < chanscore:
             del arr[0]
             lowest = chanscore
-            arr.append([channelentry[0], str(chanscore), '</br>'])
+            arr.append([channelentry[0], str(chanscore)])
             arr.sort(key=operator.itemgetter(1))
     return arr
 

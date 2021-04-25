@@ -40,7 +40,7 @@ def topvideonames(number, session):
         dislikes = user_row.dislikecount
         score = (int(comments) * 10) + int(views) + (int(likes) * 2) + int(dislikes)
         if count < buffernumber:
-            arr.append([user_row.id, str(score), '</br>'])
+            arr.append([user_row.id, str(score)])
             count += 1
             if lowest < score:
                 lowest = score
@@ -48,7 +48,7 @@ def topvideonames(number, session):
         elif lowest < score:
             del arr[0]
             lowest = score
-            arr.append([user_row.id, str(score), '</br>'])
+            arr.append([user_row.id, str(score)])
             arr.sort(key=operator.itemgetter(1))
     for records in nameresults:
         for item in arr:
