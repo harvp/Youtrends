@@ -11,13 +11,12 @@
 	$output = json_decode(exec($command), true);
 	for($i = 0; $i < 10; $i++)
 	{
-		//var_dump($output[$i])
 		$output[$i] = substr($output[$i], 0, strripos($output[$i], " "));
 	}
 	$outputStr = "<div class = \"flexContainer\">";
 	for($i = 0; $i < 10; $i++)
 	{
-		$outputStr .= "<div>" . $temp[$i] . "</div>";
+		$outputStr .= "<div>" . $output[$i] . "</div>";
 	}
 	$outputStr .= "</div>";
 
