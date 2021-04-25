@@ -44,7 +44,7 @@ def topchannels(number, session):
         videoscores.append([user_row.id, score])
     for user_row in rows:
         if user_row.channeltitle not in (channeldirectory):
-            channeldirectory.append([user_row.channeltitle + " ", user_row.id])
+            channeldirectory.append([user_row.channeltitle, user_row.id])
 
     for channelentry in channeldirectory:
         chanscore = 0
@@ -71,10 +71,13 @@ fixedresults = reverse(topchannelresults)
 
 result = {}
 counter = 0
+
 for ele in fixedresults:
-    for element in ele:
-        result[counter] = element
-        counter += 1
+    del ele[1]
+
+for ele in fixedresults:
+    result[counter] = ele
+    counter += 1
 
 print(json.dumps(result))
 

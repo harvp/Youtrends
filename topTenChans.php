@@ -9,11 +9,10 @@
 	//*/
 	$command = escapeshellcmd('python topchannels.py');
 	$output = json_decode(exec($command), true);
-	$temp;
 	for($i = 0; $i < 10; $i++)
 	{
-		var_dump($output[$i])
-		$temp[$i] = substr($output[$i], 0, strripos($output[$i], " "));
+		//var_dump($output[$i])
+		$output[$i] = substr($output[$i], 0, strripos($output[$i], " "));
 	}
 	$outputStr = "<div class = \"flexContainer\">";
 	for($i = 0; $i < 10; $i++)
