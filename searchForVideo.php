@@ -13,9 +13,11 @@
 	$output = json_decode(exec($command), true);
 	
 	$outputStr = "<div><table style = \"width: 100%\">";
-	$max = $output[6];
+	$max = $output[21];
 	if($max == 0)
 		$outputStr .= "<tr><td>No Video Found</td></tr>";
+	if($max > 20)
+		$max = 20;
 	else
 		for($i = 0; $i < $max; $i++)
 		{
