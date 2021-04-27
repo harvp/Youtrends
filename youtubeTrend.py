@@ -25,6 +25,7 @@ session.execute("""truncate table localized;""")
 session.execute("""truncate table contentdetails;""")
 session.execute("""truncate table statistics;""")
 
+
 record_id = 1
 snippet_id = 1
 localized_id = 1
@@ -35,6 +36,7 @@ with open('videoinfo.json') as data_file:
     data = json.load(data_file)
 
     for v in data:
+        keywordslist = []
         rec_etag = "'" + v['etag'] + "'"
         rec_id = "'" + v['id'] + "'"
         rec_record_id = record_id
@@ -59,7 +61,7 @@ with open('videoinfo.json') as data_file:
         scrubdescription = scrubdescription.replace("\r\n", "  ")
         s_description = "'" + scrubdescription + "'"
 
-        
+
         cont_id = contentDetails_id
         cont_duration = "'" + v['snippet']['duration'] + "'"
         cont_definition = "'" + v['snippet']['definition'] + "'"
@@ -72,10 +74,10 @@ with open('videoinfo.json') as data_file:
         stat_dislikecount = "'" + v['snippet']['dislikeCount'] + "'"
         stat_commentcount = "'" + v['snippet']['commentCount'] + "'"
 
-       
+
         l_id = localized_id
         l_title = "'" + v['snippet']['title'] + "'"
-         
+
         record_id += 1
         snippet_id += 1
         contentDetails_id += 1
@@ -86,7 +88,7 @@ with open('videoinfo.json') as data_file:
         query += str(rec_record_id) + ', '
         query += str(rec_id) + ', '
         query += rec_etag + ')'
-        #query += str(rec_snippet_id) 
+        #query += str(rec_snippet_id)
 
         prepared_stmt = session.prepare(query)
         session.execute(prepared_stmt)
@@ -121,7 +123,7 @@ with open('videoinfo.json') as data_file:
         query += cont_duration + ', '
         query += cont_definition + ', '
         query += cont_caption + ')'
-        
+
         prepared_stmt = session.prepare(query)
         session.execute(prepared_stmt)
 
@@ -133,4 +135,29 @@ with open('videoinfo.json') as data_file:
         query += stat_commentcount + ')'
 
         prepared_stmt = session.prepare(query)
-        session.execute(prepared_stmt) 
+        session.execute(prepared_stmt)
+
+        checker = "tags" in v['snippet']
+        if checker:
+            datalist = v['snippet']['tags']
+            for value in datalist:
+                value = value.translate(str.maketrans({"'": "''"}))
+                keywordslist.append(value)
+
+            query = ' '
+            for value in keywordslist:
+                query = "select keyval, count, videoids from averages where keyval = "
+                query += "'tag: " + value + "';"
+
+                myrows = session.execute(query)
+                for resultparse in myrows:
+                    ids = "'" + str(resultparse.videoids) + ", " + str(snippet_id) + "'"
+                    counter = resultparse.count + 1
+
+                mycount = str(counter)
+                print(mycount)
+                query = "update averages set count = " + mycount + ", videoids = " + ids + " where keyval = "
+                query += "'tag: " + value + "';"
+                print(query)
+                prepared_stmt = session.prepare(query)
+                session.execute(prepared_stmt)
