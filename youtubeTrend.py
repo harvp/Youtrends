@@ -31,7 +31,7 @@ snippet_id = 1
 localized_id = 1
 contentDetails_id = 1
 statistics_id = 1
-
+                
 with open('videoinfo.json') as data_file:
     data = json.load(data_file)
 
@@ -161,3 +161,18 @@ with open('videoinfo.json') as data_file:
                 print(query)
                 prepared_stmt = session.prepare(query)
                 session.execute(prepared_stmt)
+        
+        timevalue = s_publishedAt[11: 12]
+        query = "select count, videoids from averages where keyval = "
+                query += "'time: " + timevalue + "';"
+        rows = session.execute(query)
+        for resultparse in rows:
+            ids = "'" + str(resultparse.videoids) + ", " + str(snippet_id) + "'"
+            counter = resultparse.count + 1
+        query = "update averages set count = " + mycount + ", videoids = " + ids + " where keyval = "
+        query += "'time: " + timevalue + "';"
+        print(query)
+        prepared_stmt = session.prepare(query)
+        session.execute(prepared_stmt)
+        
+        
