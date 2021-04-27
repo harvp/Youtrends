@@ -34,9 +34,9 @@ def topkeywords(number, session):
     counter: int = 0
     rows = session.execute('SELECT keyval, videoids, count, score FROM averages')
     for values in rows:
-        if "tag: " in values.keyval:
+        if "time: " in values.keyval:
             average = score / count
-            tag = values.keyval.replace('tags: ', '')
+            tag = values.keyval.replace('time: ', '')
             holder.append([tag, average])
     holder.sort(key=operator.itemgetter(1))
     while len(holder) > number:
