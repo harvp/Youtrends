@@ -161,18 +161,21 @@ with open('videoinfo.json') as data_file:
                 print(query)
                 prepared_stmt = session.prepare(query)
                 session.execute(prepared_stmt)
-        
-        timevalue = s_publishedAt[11: 12]
+
+
+        timevalue = s_publishedAt[12: 14]
+        print("timevalue = " + timevalue)
         query = "select count, videoids from averages where keyval = "
-                query += "'time: " + timevalue + "';"
+        query += "'time: " + timevalue + "';"
+        print(query)
         rows = session.execute(query)
+        ids = ''
+        counter = 0
         for resultparse in rows:
             ids = "'" + str(resultparse.videoids) + ", " + str(snippet_id) + "'"
             counter = resultparse.count + 1
-        query = "update averages set count = " + mycount + ", videoids = " + ids + " where keyval = "
+        query = "update averages set count = " + str(counter) + ", videoids = " + ids + " where keyval = "
         query += "'time: " + timevalue + "';"
         print(query)
         prepared_stmt = session.prepare(query)
         session.execute(prepared_stmt)
-        
-        

@@ -26,25 +26,22 @@ def reverse(lst):
 
 
 def topkeywords(number, session):
-
-    arr = []
-    
     holder = []
-    lowest: int = 0
-    counter: int = 0
     rows = session.execute('SELECT keyval, videoids, count, score FROM averages')
     for values in rows:
         if "tag: " in values.keyval:
+            score = int(values.score)
+            count = int(values.count)
             average = score / count
-            tag = values.keyval.replace('tags: ', '')
+            tag = values.keyval.replace('tag: ', '')
             holder.append([tag, average])
     holder.sort(key=operator.itemgetter(1))
     while len(holder) > number:
         holder.pop(0)
-    return arr
+    return holder
 
 
-topwords = topkeywords(10, cqlsession)
+topwords = topkeywords(20, cqlsession)
 fixedresults = reverse(topwords)
 
 result = {}
@@ -57,5 +54,5 @@ for ele in fixedresults:
     result[counter] = ele
     counter += 1
 
-print(json.dumps(result))
 
+print(json.dumps(result))

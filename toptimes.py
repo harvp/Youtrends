@@ -35,6 +35,8 @@ def topkeywords(number, session):
     rows = session.execute('SELECT keyval, videoids, count, score FROM averages')
     for values in rows:
         if "time: " in values.keyval:
+            score = int(values.score)
+            count = int(values.count)
             average = score / count
             tag = values.keyval.replace('time: ', '')
             holder.append([tag, average])
@@ -57,5 +59,5 @@ for ele in fixedresults:
     result[counter] = ele
     counter += 1
 
-print(json.dumps(result))
-
+print(result)
+# print(json.dumps(result))
