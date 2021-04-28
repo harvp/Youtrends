@@ -53,4 +53,4 @@ def videoengagement(idnum, session):
 
 result = channelengagement(chanelname, cqlsession)
 print(result)
-exit(result)
+# exit(result)

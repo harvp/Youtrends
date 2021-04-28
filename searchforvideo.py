@@ -27,16 +27,18 @@ def searchforvideobylist(listofterms, session):
 
     results = {}
     nameresults = session.execute('SELECT id, title FROM localized')
-    counter = 0
+    counter = 1
+    results[0] = [0]
     for value in nameresults:
         flag = True
         for term in listofterms:
-            if value.title.find(term) < 0:
+            if value.title.find(term) < 1:
                 flag = False
         if flag == True:
             results[counter] = [value.title, value.id]
             counter += 1
-    results[6] = counter
+    counter -= 1
+    results[0] = counter
     return results
 
 

@@ -132,6 +132,44 @@ Very Light Gray: #E0E0E0
 			</p>
 		</section>
 		<hr>
+				<section> <!-- Search a Video! -->
+			<h2>
+				Search a Video!:
+			</h2>
+			<p>
+				Search for a video by title to see if it has made it into the 
+				top 1,000! You'll also see the video's engagement score so you
+				can compare it to other videos!
+			</p>
+			<form>
+				<input id = "searchVid" type = "text" style = "width: 300px;" placeholder = "Video Name" \>
+				<input id = "goButton" type = "button" value = "Enter" onclick = "findVideo()" \>
+			</form>
+			<p id = "searchVidResults" />
+		</section>
+		<hr>
+		<section> <!-- Search a Video! -->
+			<h2>
+				Find a video's engagement score:
+			</h2>
+			<form>
+				<input id = "vidID" type = "text" style = "width: 300px;" placeholder = "Video ID Number" \>
+				<input id = "goButton" type = "button" value = "Enter" onclick = "getVideoEngagement()" \>
+			</form>
+			<p id = "vidScoreResults" />
+		</section>
+		<hr>
+		<section> <!-- Search a Video! -->
+			<h2>
+				Find a channels' engagement score:
+			</h2>
+			<form>
+				<input id = "channelName" type = "text" style = "width: 300px;" placeholder = "Channel Name" \>
+				<input id = "goButton" type = "button" value = "Enter" onclick = "getChannelEngagement()" \>
+			</form>
+			<p id = "chanScoreResults" />
+		</section>
+		<hr>
 		<section> <!-- Top 10 Videos -->
 			<h2>
 				Top 10 Videos:
@@ -150,6 +188,24 @@ Very Light Gray: #E0E0E0
 			</p>
 		</section>
 		<hr>
+		<section> <!-- Top 10 Videos -->
+			<h2>
+				Top 10 Times to Post:
+			</h2>
+			<p id = "top10Time">
+				Error! Could not locate top ten times!
+			</p>
+		</section>
+		<hr>
+		<section> <!-- Top 10 Videos -->
+			<h2>
+				Top 20 Video Keywords:
+			</h2>
+			<p id = "top20Keywords">
+				Error! Could not locate top twenty keywords!
+			</p>
+		</section>
+		<hr>
 		<section> <!-- Explain Engagement -->
 			<h2>
 				How do we determine top videos and channels?:
@@ -165,21 +221,6 @@ Very Light Gray: #E0E0E0
 			</p>
 		</section>
 		<hr>
-		<section> <!-- Search a Video! -->
-			<h2>
-				Search a Video!:
-			</h2>
-			<p>
-				Search for a video by title to see if it has made it into the 
-				top 1,000! You'll also see the video's engagement score so you
-				can compare it to other videos!
-			</p>
-			<form>
-				<input id = "searchVid" type = "text" style = "width: 300px;" placeholder = "Video Name" \>
-				<input id = "goButton" type = "button" value = "Enter" onclick = "findVideo()" \>
-			</form>
-			<p id = "searchVidResults" />
-		</section>
 		<section>
 		</section>
 		
@@ -189,6 +230,8 @@ Very Light Gray: #E0E0E0
 				{
 					getTopChannels();
 					getTopVideos();
+					getTopTimes();
+					getTopKeywords();
 				}
 				
 				function getTopChannels()
@@ -200,7 +243,17 @@ Very Light Gray: #E0E0E0
 				{
 					toPHP("topTenVids.php", "top10Vid", "")
 				}
-				
+
+				function getTopTimes()
+				{
+					toPHP("topTenTimes.php", "top10Time", "")
+				}
+			
+				function getTopKeywords()
+				{
+					toPHP("topTwentyKeywords.php", "top20Keywords", "")
+				}
+
 				function toPHP(dest, output, parameter)
 				{
 					var temp = parameter;
@@ -231,6 +284,26 @@ Very Light Gray: #E0E0E0
 						toPHP("searchForVideo.php", "searchVidResults", goal); 
 					else
 						document.getElementById("searchVidResults").innerHTML = "<p>You must enter a name!</p>";
+				}
+
+				function getVideoEngagement()
+				{
+					var goal = document.getElementById("vidID").value
+					var temp = goal;
+					if(temp.trim()!= "")
+						toPHP("videoscore.php", "vidScoreResults", goal); 
+					else
+						document.getElementById("vidScoreResults").innerHTML = "<p>You must enter a name!</p>";
+				}
+
+				function getChannelEngagement()
+				{
+					var goal = document.getElementById("channelName").value
+					var temp = goal;
+					if(temp.trim()!= "")
+						toPHP("channelscore.php", "chanScoreResults", goal); 
+					else
+						document.getElementById("chanScoreResults").innerHTML = "<p>You must enter a name!</p>";
 				}
 			</script>
 		</section>

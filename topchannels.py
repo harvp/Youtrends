@@ -72,12 +72,18 @@ fixedresults = reverse(topchannelresults)
 result = {}
 counter = 0
 
-for ele in fixedresults:
-    del ele[1]
-
-for ele in fixedresults:
-    result[counter] = ele
-    counter += 1
+if len(sys.argv) == 1:
+    for ele in fixedresults:
+        del ele[1]
+    for ele in fixedresults:
+        result[counter] = ele
+        counter += 1
+else:
+    for ele in fixedresults:
+        del ele[0]
+    for ele in fixedresults:
+        result[counter] = ele
+        counter += 1
 
 print(json.dumps(result))
 

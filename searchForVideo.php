@@ -2,27 +2,14 @@
 <?php
 	$query = $_GET["q"];
 	
-	/*TESTER DATA UNCOMMENT LINE TO REMOVE
-	for($i = 0; $i < 5; $i++)
-	{
-		$output[$i] = $i;
-		$output[$i] .= " " . ($i * $i);
-	}
-	// */
 	$command = 'python searchforvideo.py ' . $query;
 	$output = json_decode(exec($command), true);
-	
+	$max = $output[0];
 	$outputStr = "<div><table style = \"width: 100%\">";
-	$max = $output[21];
-	if($max == 0)
-		$outputStr .= "<tr><td>No Video Found</td></tr>";
-	if($max > 20)
-		$max = 20;
-	else
-		for($i = 0; $i < $max; $i++)
-		{
-			$outputStr .= "<tr><td>" . $output[$i][0] . "</td><td>" . $output[$i][1] . "</td></tr>";
-		}
+	for($i = 1; $i <= $max; $i++)
+	{
+			$outputStr .= "<tr><td>" . $output[$i][0] . "</td><td> Video ID Number: " . $output[$i][1] . "</td></tr>";
+	}
 	$outputStr .= "</table></div>";
 	
 	echo $outputStr;
